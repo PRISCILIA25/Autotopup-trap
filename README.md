@@ -145,3 +145,6 @@ cast logs --rpc-url $RPC $RESPONDER_ADDRESS
 **Reply:**
 `SEND ALL HELPERS` → include every helper script
 `ONLY permit + bash test + zip format` → compile specific tools instantly
+
+<img width="1599" height="739" alt="image" src="https://github.com/user-attachments/assets/bcca7ecc-cd5c-42ef-aed7-adc866423616" />
+
