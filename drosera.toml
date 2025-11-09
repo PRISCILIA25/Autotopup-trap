@@ -7,7 +7,7 @@ drosera_address = "0x91cB447BaFc6e0EA0F4Fe056F5a9b1F14bb06e5D"
 
 [traps.hello_world]
 path = "out/AutoTopUpTrap.sol/Trap.json"
-response_contract = "0x80662f3404f8da2B1F99782227B6559cB39133c8"
+response_contract = "0xC7361b129C5256e8F9BE5611A766D8478B7Ba142"
 response_function = "respondAndTopUp(address,address,uint256)"
 cooldown_period_blocks = 33
 min_number_of_operators = 1
