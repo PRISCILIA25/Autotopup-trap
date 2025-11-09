@@ -9,19 +9,15 @@ contract TopUpResponder {
     // SAFE destination (monitored wallet)
     address public constant SAFE = 0xD78a2D9D050bd1C8bef581Aa6Da507193708776A;
 
-    // FUNDING: not enforced in responder (caller supplies 'from'), but PoC uses funding wallet: 0x6937...
-    // Only allow operator to call response functions
-    address public constant ALLOWED_CALLER = 0x0c5832C5fa862E1dBc765408f7987AAd4F7E7647;
-
+    // FUNDING: not enforced in responder (caller supplies 'from') for PoC.
+    // WARNING: No caller gate in this PoC version (open). Replace with owner/caller gating in prod.
     // reason codes as bytes32 (gas efficient)
     bytes32 public constant REASON_ZERO = bytes32("ZERO");
-    bytes32 public constant REASON_UNAUTH = bytes32("UNAUTH");
     bytes32 public constant REASON_TF = bytes32("TF");
     bytes32 public constant REASON_PERMIT = bytes32("PERMIT");
 
     event TopUp(address indexed token, address indexed from, address indexed to, uint256 amount, address caller);
     event TopUpFailed(address indexed token, address indexed from, uint256 amount, bytes32 reason, bytes data, address caller);
-    event Unauthorized(address indexed caller, address token, address from, uint256 amount);
 
     // low-level transferFrom wrapper
     function _transferFrom(address token, address from, address to, uint256 amount) internal returns (bool, bytes memory) {
@@ -37,12 +33,8 @@ contract TopUpResponder {
     }
 
     // Primary responder: called by Drosera when trap triggers
-    // Signature matches drosera.toml response_function below
+    // Signature matches drosera.toml response_function: respondAndTopUp(address,address,uint256)
     function respondAndTopUp(address token, address from, uint256 amount) external {
-        if (msg.sender != ALLOWED_CALLER) {
-            emit Unauthorized(msg.sender, token, from, amount);
-            return;
-        }
         if (amount == 0) {
             emit TopUpFailed(token, from, amount, REASON_ZERO, "", msg.sender);
             return;
@@ -75,10 +67,6 @@ contract TopUpResponder {
         uint256 deadline,
         uint8 v, bytes32 r, bytes32 s
     ) external {
-        if (msg.sender != ALLOWED_CALLER) {
-            emit Unauthorized(msg.sender, token, from, amount);
-            return;
-        }
         if (amount == 0) {
             emit TopUpFailed(token, from, amount, REASON_ZERO, "", msg.sender);
             return;
